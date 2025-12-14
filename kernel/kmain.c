@@ -32,12 +32,12 @@ static unsigned char inb(unsigned short port) {
 static void flex(void) {
     fb_print(
         "\n"
-        " ________            _____  _____ \n"
-        " | ___ \\           |  ___||  ___|\n"
-        " | |_/ /__ _  ___   | |__  | |__  \n"
-        " |    // _` |/ _ \\  |  __| |  __| \n"
-        " | |\\ \\ (_| |  __/  | |___ | |___ \n"
-        " \\_| \\_\\__,_|\\___|  \\____/ \\____/\n"
+        " ________            _____ \n"
+        " | ___ \\           |  ___|\n"
+        " | |_/ /__ _  ___   | |__  \n"
+        " |    // _` |/ _ \\ |  __| \n"
+        " | |\\ \\ (_| |  __/| | \n"
+        " \\_| \\_\\__,_|\\__|_| \n"
         "           by rfff-glitch\n\n"
     );
 }
@@ -65,7 +65,6 @@ static void keyboard_poll(void) {
 
     unsigned char scancode = inb(KEYBOARD_DATA);
 
-    /* ignore key releases */
     if (scancode & 0x80)
         return;
 
