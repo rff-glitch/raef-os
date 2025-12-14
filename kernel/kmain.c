@@ -6,6 +6,8 @@
 static char input_buffer[128];
 static int buffer_index = 0;
 
+static unsigned long uptime_ticks = 0;
+
 /* minimal strcmp */
 int strcmp(const char* a, const char* b) {
     while (*a && (*a == *b)) {
@@ -29,6 +31,19 @@ static unsigned char inb(unsigned short port) {
     return ret;
 }
 
+void help(void){
+    fb_print(
+        "Commands:\n"
+        "  help      - show this message\n"
+        "  clear     - clear screen\n"
+        "  flex      - ascii art\n"
+        "  uptime    - show uptime\n"
+        "  reboot    - reboot system\n"
+        "  echo <txt>- print text\n"
+    );
+}
+
+
 static void flex(void) {
     fb_print(
         "\n"
@@ -42,18 +57,74 @@ static void flex(void) {
     );
 }
 
+static void echo(const char* input) {
+
+    if (!input[5]) {
+        fb_print("\n");
+        return;
+    }
+
+    fb_print(input + 5);
+    fb_print("\n");
+}
+
+void reboot(void) {
+    fb_print("Rebooting...\n");
+    __asm__ volatile (
+        "cli\n"
+        "mov $0xFE, %al\n"
+        "out %al, $0x64\n"
+    );
+    while (1) { }
+}
+
+static void uptime(void) {
+    unsigned long t = uptime_ticks / 100000;
+    char buf[32];
+    int i = 0;
+
+    if (t == 0) {
+        buf[i++] = '0';
+    } else {
+        char tmp[32];
+        int j = 0;
+
+        while (t > 0) {
+            tmp[j++] = '0' + (t % 10);
+            t /= 10;
+        }
+
+        while (j > 0) {
+            buf[i++] = tmp[--j];
+        }
+    }
+
+    buf[i++] = '\n';
+    buf[i] = 0;
+
+    fb_print("Uptime: ");
+    fb_print(buf);
+}
+
+
 static void handle_command(void) {
     if (strcmp(input_buffer, "help") == 0) {
-        fb_print(
-            "Commands:\n"
-            "  help  - show this message\n"
-            "  clear - clear screen\n"
-            "  flex  - ascii art\n"
-        );
+        help();
     } else if (strcmp(input_buffer, "clear") == 0) {
-        fb_clear();
-    } else if (strcmp(input_buffer, "flex") == 0) {
+        fb_clear();  
+    }else if (
+        input_buffer[0] == 'e' &&
+        input_buffer[1] == 'c' &&
+        input_buffer[2] == 'h' &&
+        input_buffer[3] == 'o' &&
+        input_buffer[4] == ' ') {
+        echo(input_buffer);  
+    }else if (strcmp(input_buffer, "flex") == 0) {
         flex();
+    } else if (strcmp(input_buffer, "uptime") == 0) {
+        uptime();
+    }else if (strcmp(input_buffer, "reboot") == 0) {
+        reboot();
     } else if (input_buffer[0]) {
         fb_print("Unknown command\n");
     }
@@ -98,10 +169,13 @@ static void keyboard_poll(void) {
 
 void kmain(void) {
     fb_clear();
-    fb_print("Raef OS by rfff-glitch\n");
+    fb_print("Raef OS \n");
+    flex();
+    help();
     fb_print("> ");
 
     while (1) {
         keyboard_poll();
+        uptime_ticks++;
     }
 }
