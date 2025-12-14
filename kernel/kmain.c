@@ -15,7 +15,7 @@ int strcmp(const char* a, const char* b) {
     return *(unsigned char*)a - *(unsigned char*)b;
 }
 
-/* scancode → ASCII (US layout, minimal) */
+/* s ASCII (US layout, minimal) */
 static char scancode_map[256] = {
     0, 27,'1','2','3','4','5','6','7','8','9','0','-','=','\b',
     '\t','q','w','e','r','t','y','u','i','o','p','[',']','\n',0,
@@ -36,9 +36,9 @@ static void flex(void) {
         " | ___ \\           |  ___|\n"
         " | |_/ /__ _  ___   | |__  \n"
         " |    // _` |/ _ \\ |  __| \n"
-        " | |\\ \\ (_| |  __/| | \n"
-        " \\_| \\_\\__,_|\\__|_| \n"
-        "           by rfff-glitch\n\n"
+        " | |\\ \\ (_| |  __/| |    \n"
+        " \\_| \\_\\__,_|\\__|_|    \n"
+        "           by rfff-glitch \n\n"
     );
 }
 
