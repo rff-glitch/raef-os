@@ -38,8 +38,9 @@ void help(void){
         "  clear     - clear screen\n"
         "  flex      - ascii art\n"
         "  uptime    - show uptime\n"
-        "  reboot    - reboot system\n"
         "  echo <txt>- print text\n"
+        "  reboot    - reboot system\n"
+        "  shutdown  - shutdown system\n"
     );
 }
 
@@ -76,6 +77,25 @@ void reboot(void) {
         "out %al, $0x64\n"
     );
     while (1) { }
+}
+
+void shutdown(void) {
+    fb_print("Attempting system power-off...\n");
+
+    __asm__ volatile (
+        "cli\n"
+        "mov $0x5307, %%ax\n"
+        "mov $0x0001, %%bx\n"
+        "mov $0x0003, %%cx\n"
+        "int $0x15\n"       
+        : 
+        : 
+        : "ax", "bx", "cx"
+    );
+
+    while (1) {
+        __asm__ volatile ("hlt"); 
+    }
 }
 
 static void uptime(void) {
@@ -125,6 +145,8 @@ static void handle_command(void) {
         uptime();
     }else if (strcmp(input_buffer, "reboot") == 0) {
         reboot();
+    }else if (strcmp(input_buffer, "shutdown") == 0) {
+        shutdown();
     } else if (input_buffer[0]) {
         fb_print("Unknown command\n");
     }
