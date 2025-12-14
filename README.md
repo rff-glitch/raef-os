@@ -103,7 +103,6 @@ make clean && make run
 
 * Type commands at the prompt (`>`)
 * Press **Enter** to execute
-* **Backspace** works correctly
 * Screen scrolls automatically
 
 Available commands:
@@ -111,7 +110,9 @@ Available commands:
 * `help`  – show help
 * `clear` – clear screen
 * `flex`  – ASCII art
-
+* `uptime`  – show uptime scince boot
+* `echo`  – print input text
+* `reboot `  – restart the OS
 ---
 
 ## Technical Notes
@@ -132,6 +133,7 @@ Planned next steps:
 * Serial logging
 * `kprintf` formatted output
 * GDT setup
+* file manager 
 * Paging & memory management
 * Process/task system
 
