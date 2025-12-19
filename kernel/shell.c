@@ -109,13 +109,13 @@ static void help(const char* args) {
     (void)args;
     fb_print(
         "Commands:\n"
-        "  help\n"
-        "  clear\n"
-        "  echo <text>\n"
-        "  flex\n"
-        "  uptime\n"
-        "  reboot\n"
-        "  shutdown\n"
+        "  help --- show this help message \n"
+        "  clear -- clear the screen\n"
+        "  echo <text> -- print text to the screen\n"
+        "  flex --- show a flex ascii art\n"
+        "  uptime --- show system uptime\n"
+        "  reboot --- reboot the system\n"
+        "  shutdown --- shutdown the system\n"
     );
 }
 
