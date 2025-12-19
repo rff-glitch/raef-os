@@ -1,7 +1,9 @@
 #include "../drivers/framebuffer.h"
 #include "../drivers/keyboard.h"
+#include "../lib/stddef.h"
+#include "../lib/stdint.h"
 #include "shell.h"
-#include <stdint.h>
+
 
 unsigned long uptime_ticks = 0;
 

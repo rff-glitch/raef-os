@@ -1,29 +1,26 @@
-# Tools
-ASM     = nasm
-CC      = gcc
-LD      = ld
+ASM = nasm
+CC  = gcc
+LD  = ld
 
-# Flags
 ASMFLAGS = -f elf32
 CFLAGS   = -m32 -ffreestanding -fno-stack-protector -fno-pic -Wall -Wextra
 LDFLAGS  = -m elf_i386 -T link.ld
 
-# Output
-KERNEL  = kernel.elf
-ISO     = raef-os.iso
+KERNEL = kernel.elf
+ISO    = raef-os.iso
 
-# Object files
 OBJS = \
 	loader.o \
 	kernel/kmain.o \
 	kernel/shell.o \
 	drivers/framebuffer.o \
-	drivers/keyboard.o
+	drivers/keyboard.o \
+	lib/string.o
 
-# Default
+# ===== DEFAULT =====
 all: $(ISO)
 
-# ISO
+# ===== ISO =====
 $(ISO): $(KERNEL)
 	cp $(KERNEL) iso/boot/kernel.elf
 	genisoimage -R \
@@ -33,32 +30,36 @@ $(ISO): $(KERNEL)
 		-boot-info-table \
 		-o $(ISO) iso
 
-# Link kernel
+# ===== LINK =====
 $(KERNEL): $(OBJS)
 	$(LD) $(LDFLAGS) $(OBJS) -o $(KERNEL)
 
-# ASM
+# ===== ASM =====
 loader.o: loader.s
-	$(ASM) $(ASMFLAGS) loader.s -o loader.o
+	$(ASM) $(ASMFLAGS) $< -o $@
 
-# Kernel
+# ===== KERNEL =====
 kernel/kmain.o: kernel/kmain.c
-	$(CC) $(CFLAGS) -c kernel/kmain.c -o kernel/kmain.o
+	$(CC) $(CFLAGS) -Ilib -c $< -o $@
 
 kernel/shell.o: kernel/shell.c
-	$(CC) $(CFLAGS) -c kernel/shell.c -o kernel/shell.o
+	$(CC) $(CFLAGS) -Ilib -c $< -o $@
 
-# Drivers
+# ===== DRIVERS =====
 drivers/framebuffer.o: drivers/framebuffer.c
-	$(CC) $(CFLAGS) -c drivers/framebuffer.c -o drivers/framebuffer.o
+	$(CC) $(CFLAGS) -Ilib -c $< -o $@
 
 drivers/keyboard.o: drivers/keyboard.c
-	$(CC) $(CFLAGS) -c drivers/keyboard.c -o drivers/keyboard.o
+	$(CC) $(CFLAGS) -Ilib -c $< -o $@
 
-# Run
+# ===== LIB =====
+lib/string.o: lib/string.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# ===== RUN =====
 run: $(ISO)
 	qemu-system-i386 -cdrom $(ISO)
 
-# Clean
+# ===== CLEAN =====
 clean:
-	rm -f kernel/*.o drivers/*.o *.o *.elf *.iso
+	rm -f $(OBJS) *.elf *.iso
