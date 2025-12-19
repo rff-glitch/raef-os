@@ -1,10 +1,8 @@
 #include "../drivers/framebuffer.h"
 #include "../drivers/keyboard.h"
 #include "shell.h"
-#include <stdint.h>
-#include <stddef.h>
-
-
+#include "../lib/string.h"
+#include "../lib/stdint.h"
 
 
 static unsigned int kstrlen(const char* s) {
